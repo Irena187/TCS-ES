@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCS-ES – Стартово меню</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --border-subtle: rgba(148, 163, 184, 0.4);
+      --accent: #2563eb;
+      --accent-strong: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.06);
+      --text-main: #111827;
+      --text-soft: #6b7280;
+      --danger: #f97316;
+      --radius-xl: 18px;
+      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: var(--text-main);
+      background-color: var(--bg);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 22px 22px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.06), transparent 60%);
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    #siteTitle {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #111827;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(37, 99, 235, 0.6);
+      box-shadow: 0 0 0 1px rgba(191, 219, 254, 0.7);
+    }
+
+    #siteTitle::before {
+      content: "●";
+      font-size: 11px;
+      color: #22c55e;
+      margin-right: 2px;
+    }
+
+    .subtitle {
+      flex: 1;
+      min-width: 200px;
+      text-align: right;
+    }
+
+    .subtitle h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .subtitle p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .subtitle {
+        text-align: left;
+      }
+    }
+
+    .intro {
+      margin-bottom: 18px;
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    .intro strong {
+      color: var(--text-main);
+    }
+
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .modes {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .mode-card {
+      border-radius: 16px;
+      padding: 14px 14px 12px;
+      background: #ffffff;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(148, 163, 184, 0.25);
+    }
+
+    .mode-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+    }
+
+    .mode-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    .mode-title span.icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .mode-title span.icon.call {
+      background: rgba(248, 171, 96, 0.1);
+      color: var(--danger);
+    }
+
+    .mode-desc {
+      font-size: 13px;
+      color: var(--text-soft);
+      min-height: 2.4em;
+    }
+
+    .mode-footer {
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    a.mode-button {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fef2f2;
+      background: linear-gradient(135deg, #7c2d12, #6d28d9);
+      box-shadow: 0 10px 24px rgba(76, 29, 149, 0.45);
+      border: 1px solid rgba(248, 250, 252, 0.9);
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, filter 0.18s ease-out;
+    }
+
+    a.mode-button:hover {
+      filter: brightness(1.03);
+      box-shadow: 0 14px 32px rgba(37, 99, 235, 0.55);
+      transform: translateY(-1px);
+    }
+
+    a.mode-button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: none;
+    }
+
+    a.mode-button.secondary {
+      background: linear-gradient(135deg, #9a3412, #7c3aed);
+      color: #fef2f2;
+      box-shadow: 0 10px 24px rgba(88, 28, 135, 0.45);
+      border: 1px solid rgba(254, 226, 226, 0.9);
+    }
+
+    .meta-row {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(148, 163, 184, 0.2);
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .chip span {
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <div class="card-inner">
+        <header>
+          <div id="siteTitle">TCS-ES</div>
+          <div class="subtitle">
+            <h1>Стартово меню</h1>
+            <p>Изберете как е открит инцидентът, за да заредите съответната версия на приложението.</p>
+          </div>
+        </header>
+
+        <div class="intro">
+          <strong>Какво тестваме?</strong> Всяка версия показва различен сценарий за задействане на системата – при изпратена снимка от гражданин или при получено спешно обаждане.
+        </div>
+
+        <div class="modes">
+          <div class="mode-card">
+            <div class="mode-label">Сценарий 1</div>
+            <div class="mode-title">
+              <span class="icon">📷</span>
+              Версия с изпратена снимка
+            </div>
+            <div class="mode-desc">
+              Стартира TCS-ES в режим, при който инцидентът е подаден чрез изображение от гражданин или камера.
+            </div>
+            <div class="mode-footer">
+              <a href="./versionWithImage/index.html" class="mode-button">
+                Отвори версията
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="mode-card">
+            <div class="mode-label">Сценарий 2</div>
+            <div class="mode-title">
+              <span class="icon call">📞</span>
+              Версия с получено обаждане
+            </div>
+            <div class="mode-desc">
+              Стартира TCS-ES в режим, при който инцидентът е докладван чрез телефонно обаждане към центъра за спешни повиквания.
+            </div>
+            <div class="mode-footer">
+              <a href="./versionWithLoading/index2.html" class="mode-button secondary">
+                Отвори версията
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <div class="chip">
+            <span class="chip-dot"></span>
+            <span>Демо режим за презентации</span>
+          </div>
+          <span>Версия на прототипа: v0.1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

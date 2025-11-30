@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>TCS-ES</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <link rel="stylesheet" href="style2.css">
+
+</head>
+
+<body>
+
+  <div id="siteTitle">TCS-ES</div>
+
+  <div id="popup">
+    <div id="popupBox">
+      <h2 style="font-size:18px; margin-bottom:10px;">
+        Подаден адрес на инцидент от обаждане:
+      </h2>
+      <p style="font-size:16px; margin-bottom:10px;">
+        Стара Загора Център, ул. „Генерал Столетов“ 73
+      </p>
+      <div class="spinner"></div>
+      <h3 style="font-size:16px; margin-top:10px;">Генериране на маршрути...</h3>
+    </div>
+  </div>
+
+  <h1>Възможни маршрути</h1>
+  <div id="map"></div>
+
+  <div id="legend">
+    <div class="routeBox"><span style="background:lightcoral"></span>Маршрут A</div>
+    <div class="routeBox"><span style="background:rgb(94, 94, 255);"></span>Маршрут B</div>
+  </div>
+
+  <div id="liveData">Маршрут A: зареждане...<br>Маршрут B: зареждане...</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+  <script src="https://rawcdn.githack.com/bbecquet/Leaflet.RotatedMarker/master/leaflet.rotatedMarker.js"></script>
+
+  <script>
+    function updateLiveData() {
+      fetch('http://localhost:5000/data')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('liveData').innerHTML = `Маршрут A: ${data.routeA} коли<br>Маршрут B: ${data.routeB} коли`;
+        })
+        .catch(() => {
+          document.getElementById('liveData').innerHTML = 'Маршрут A: --<br>Маршрут B: --';
+        });
+    }
+    var liveDataInterval = setInterval(updateLiveData, 2000);
+    updateLiveData();
+
+    function approvePopup() {
+      document.getElementById('popup').style.display = 'none';
+      if (typeof liveDataInterval !== 'undefined') {
+        clearInterval(liveDataInterval);
+      }
+      document.getElementById('liveData').innerHTML = '';
+
+      setTimeout(() => {
+        document.getElementById('liveData').innerHTML = 'Маршрут A: 2 коли<br>Маршрут B: 5 коли';
+        try { routeControl.remove(); } catch (e) {}
+
+        setTimeout(() => {
+          let msgs = [
+            'Маршрут A е по-ефективен.',
+            'Сменям светофарите на зелено за маршрут A, за да облекча трафика.',
+            'Включвам аварийна сигнализация за засегнатите улици. Изпращам маршрута към аварийните екипи.'
+          ];
+
+          let i = 0;
+          const liveDataEl = document.getElementById('liveData');
+          liveDataEl.innerHTML = '';
+
+          function showNext() {
+            if (i < msgs.length) {
+              const msg = msgs[i];
+              liveDataEl.innerHTML += msg + '<br>';
+              i++;
+              setTimeout(showNext, 1300);
+            }
+          }
+
+          showNext();
+        }, 2500);
+      }, 2500);
+    }
+
+    function declinePopup() {
+      document.getElementById('popup').style.display = 'none';
+      try { map.removeLayer(hospitalMarker); } catch (e) {}
+      try { map.removeLayer(nakoMarker); } catch (e) {}
+      try { routeControl.remove(); } catch (e) {}
+      try { redRoute.remove(); } catch (e) {}
+    }
+
+    var map = L.map('map', { zoomControl: true }).setView([42.4254, 25.6151], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    var hospitalMarker = L.marker([42.4240327, 25.6124967]).addTo(map).bindPopup('Окръжна болница');
+    var nakoMarker = L.marker([42.426718, 25.617780]).addTo(map).bindPopup('Нако шоколада');
+
+    var routeControl = L.Routing.control({
+      waypoints: [L.latLng(42.4240327, 25.6124967), L.latLng(42.426718, 25.617780)],
+      lineOptions: { styles: [{ color: 'blue', weight: 5 }] },
+      addWaypoints: false,
+      draggableWaypoints: false,
+      show: false
+    }).addTo(map);
+
+    var redRoute = L.Routing.control({
+      routeLine: r => L.Routing.line(r, { styles: [{ color: 'lightcoral', weight: 3 }] }),
+      waypoints: [
+        L.latLng(42.4240327, 25.6124967),
+        L.latLng(42.427199, 25.613347),
+        L.latLng(42.427702, 25.616108),
+        L.latLng(42.426718, 25.617780)
+      ],
+      createMarker: () => null,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      show: false
+    }).addTo(map);
+
+    var userMarker = null;
+    var lastHeading = 0;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(pos => {
+        var lat = pos.coords.latitude,
+            lng = pos.coords.longitude;
+        var heading = (typeof pos.coords.heading === 'number') ? pos.coords.heading : lastHeading;
+        lastHeading = heading;
+
+        if (!userMarker) {
+          userMarker = L.marker([lat, lng], { rotationAngle: heading || 0, rotationOrigin: 'center center' }).addTo(map);
+        } else {
+          userMarker.setLatLng([lat, lng]);
+          userMarker.setRotationAngle(heading || 0);
+        }
+
+        map.setView([lat, lng], map.getZoom());
+      });
+    }
+
+    setTimeout(function () {
+      approvePopup();
+    }, 2000);
+  </script>
+</body>
+</html>

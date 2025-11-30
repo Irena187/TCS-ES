@@ -1,0 +1,119 @@
+* {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: "Inter", sans-serif;
+    }
+
+    html, body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: 20px;
+      text-align: center;
+      color: #222;
+    }
+
+    #map {
+      width: 100vw;
+      height: 60vh;
+      max-height: 500px;
+      border-radius: 14px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    #legend, #liveData {
+      background: white;
+      width: 90vw;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    #popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    #popupBox {
+      background: white;
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;    
+      border-radius: 22px; 
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0,0,0,0.35);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    #siteTitle {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      color: #111;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+    }
+
+    .approveBtn { background: #007bff; }
+    .declineBtn { background: #ff4444; }
+
+    .routeBox span {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+
+    #popupBox h2 {
+      font-size: 20px;
+    }
+
+    #popupBox img {
+      width: 400px;      
+      max-width: 60vw;    
+      margin: 18px auto;  
+      display: block;
+      border-radius: 8px;
+    }
